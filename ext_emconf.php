@@ -1,9 +1,5 @@
 <?php
 
-/***************************************************************
- * Extension Manager/Repository config file for ext "denyfegroup".
- ***************************************************************/
-
 $EM_CONF[$_EXTKEY] = array (
     'title' => 'JSON Reports',
     'description' => 'Outputs reports as JSON for processing in monitoring or alerting systems.',
