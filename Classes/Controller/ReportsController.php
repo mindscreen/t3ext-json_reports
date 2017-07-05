@@ -26,7 +26,7 @@ class ReportsController {
         }
 
         // execute CLI script
-        $reportsJson = exec('TYPO3_CONTEXT=' . getenv('TYPO3_CONTEXT') . ' '  . PATH_site . 'typo3/cli_dispatch.phpsh extbase reports:list');
+        $reportsJson = exec('TYPO3_CONTEXT=' . \TYPO3\CMS\Core\Utility\GeneralUtility::getApplicationContext()->__toString() . ' '  . PATH_site . 'typo3/cli_dispatch.phpsh extbase reports:list');
         echo $reportsJson;
 
         $reports = json_decode($reportsJson, true);
