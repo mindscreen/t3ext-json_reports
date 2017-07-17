@@ -28,7 +28,7 @@ class ReportsController
 
         // Check if current IP address is in range
         if (!GeneralUtility::cmpIP(GeneralUtility::getIndpEnv('REMOTE_ADDR'),
-            $GLOBALS['EXTCONF']['json_reports']['allowedIpAddresses'])
+            $GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['json_reports']['allowedIpAddresses'])
         ) {
             $statusCode = 403;
             $statusMessage = 'Access denied';
