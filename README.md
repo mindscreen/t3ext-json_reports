@@ -1,3 +1,8 @@
+[![License: GPL v3](https://img.shields.io/badge/License-GPL%20v3-blue.svg)](https://www.gnu.org/licenses/gpl-3.0)
+![Packagist][packagist]
+
+[packagist]: https://img.shields.io/packagist/v/mindscreen/json-reports.svg
+
 # JSON Reports for TYPO3
 
 This TYPO3 extension adds a CLI command and an HTTP endpoint that outputs the reports that you can find in the reports 
