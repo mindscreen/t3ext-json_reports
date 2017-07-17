@@ -20,7 +20,7 @@ You can access the reports JSON via CLI with the following command:
 
 In order to use the HTTP endpoint you have to configure the allowed IP addresses via the following setting:
 
-```$GLOBALS['EXTCONF']['json_reports']['allowedIpAddresses'] = '';```
+```$GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['json_reports']['allowedIpAddresses'] = '';```
 
 Clients that match the allowed IP address range can access the reports JSON via the following URL:
 
