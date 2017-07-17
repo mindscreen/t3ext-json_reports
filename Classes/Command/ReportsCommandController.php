@@ -3,6 +3,7 @@ namespace Mindscreen\JsonReports\Command;
 
 
 use TYPO3\CMS\Extbase\Mvc\Controller\CommandController;
+use TYPO3\CMS\Lang\LanguageService;
 use TYPO3\CMS\Reports\Status;
 use TYPO3\CMS\Reports\StatusProviderInterface;
 
@@ -17,6 +18,8 @@ class ReportsCommandController extends CommandController
      */
     public function listCommand()
     {
+        $this->getLanguageService()->includeLLFile('EXT:reports/Resources/Private/Language/locallang_reports.xlf');
+
         $result = [];
         /** @var StatusProviderInterface $provider */
         foreach ($GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['reports']['tx_reports']['status']['providers'] as $category => $providers) {
@@ -28,8 +31,7 @@ class ReportsCommandController extends CommandController
                     /** @var Status $statusItem */
                     foreach ($statusArray as $statusItem) {
                         $result[$category][] = [
-                            // Fallback title for reports that use unavailable translation functionality
-                            'title' => $statusItem->getTitle() ?: 'Please check reports module in TYPO3 backend',
+                            'title' => $statusItem->getTitle(),
                             'value' => $statusItem->getValue(),
                             'message' => $statusItem->getMessage(),
                             'severity' => $statusItem->getSeverity(),
@@ -38,7 +40,16 @@ class ReportsCommandController extends CommandController
                 }
             }
         }
-        echo json_encode($result);
+        $this->output->output(json_encode($result));
+    }
+
+    /**
+     * Returns the Language Service
+     * @return LanguageService
+     */
+    protected function getLanguageService()
+    {
+        return $GLOBALS['LANG'];
     }
 
 }
