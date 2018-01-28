@@ -1,7 +1,8 @@
 <?php
 namespace Mindscreen\JsonReports\Command;
 
-
+use Mindscreen\JsonReports\Output\OutputInterface;
+use TYPO3\CMS\Extbase\Configuration\Exception;
 use TYPO3\CMS\Extbase\Mvc\Controller\CommandController;
 use TYPO3\CMS\Lang\LanguageService;
 use TYPO3\CMS\Reports\Status;
@@ -14,9 +15,12 @@ class ReportsCommandController extends CommandController
 {
 
     /**
-     * List all report results as JSON
+     * Output report results
+     *
+     * @param string $format
+     * @throws Exception
      */
-    public function listCommand()
+    public function listCommand($format = 'json')
     {
         $this->getLanguageService()->includeLLFile('EXT:reports/Resources/Private/Language/locallang_reports.xlf');
 
@@ -40,7 +44,16 @@ class ReportsCommandController extends CommandController
                 }
             }
         }
-        $this->output->output(json_encode($result));
+
+        if (!isset($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['json_reports']['output'][$format])) {
+            throw new Exception('The output class for format "' . $format . '" has not been configured.', 1517161193);
+        }
+        $output = $this->objectManager->get($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['json_reports']['output'][$format]);
+        if (!$output instanceof OutputInterface) {
+            throw new Exception('The output class "' . get_class($output) . '" does not implement OutputInterface.', 1517161194);
+        }
+
+        $this->output->output($output->convert($result));
     }
 
     /**

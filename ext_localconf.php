@@ -9,6 +9,12 @@ if (!isset($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['json_reports']['allowedIpAddr
     $GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['json_reports']['allowedIpAddresses'] = '';
 }
 
+if (!isset($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['json_reports']['output'])) {
+    $GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['json_reports']['output'] = [];
+}
+$GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['json_reports']['output']['json'] = \Mindscreen\JsonReports\Output\Json::class;
+
+
 // Register eID Script
 $GLOBALS['TYPO3_CONF_VARS']['FE']['eID_include']['json_reports'] = \Mindscreen\JsonReports\Controller\ReportsController::class . '::indexAction';
 
