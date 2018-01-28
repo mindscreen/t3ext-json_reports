@@ -1,10 +1,9 @@
 {
   "name": "mindscreen/json-reports",
   "type": "typo3-cms-extension",
-  "version": "0.1.0",
   "description": "Outputs TYPO3 reports as JSON for processing in monitoring or alerting systems",
   "homepage": "https://github.com/mindscreen/t3ext-json_reports",
-  "license": ["GPL"],
+  "license": ["GPL-3.0-or-later"],
   "keywords": ["TYPO3 CMS", "Reports", "Monitoring"],
   "support": {
     "issues": "https://github.com/mindscreen/t3ext-json_reports/issues"
