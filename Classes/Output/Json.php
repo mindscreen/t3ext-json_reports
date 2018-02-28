@@ -5,16 +5,24 @@ namespace Mindscreen\JsonReports\Output;
 /**
  * JSON output for reports
  */
-class Json implements OutputInterface
+class Json extends AbstractOutput
 {
 
     /**
-     * @param $reportData
      * @return string
      */
-    public function convert($reportData)
+    public function getText()
     {
-        return json_encode($reportData);
+        return json_encode($this->reportData);
     }
+
+    /**
+     * @return int
+     */
+    public function getExitCode()
+    {
+        return 0;
+    }
+
 
 }

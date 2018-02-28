@@ -19,6 +19,7 @@ class ReportsCommandController extends CommandController
      *
      * @param string $format
      * @throws Exception
+     * @throws \TYPO3\CMS\Extbase\Mvc\Exception\StopActionException
      */
     public function listCommand($format = 'json')
     {
@@ -48,12 +49,13 @@ class ReportsCommandController extends CommandController
         if (!isset($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['json_reports']['output'][$format])) {
             throw new Exception('The output class for format "' . $format . '" has not been configured.', 1517161193);
         }
-        $output = $this->objectManager->get($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['json_reports']['output'][$format]);
+        $output = $this->objectManager->get($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['json_reports']['output'][$format], $result);
         if (!$output instanceof OutputInterface) {
             throw new Exception('The output class "' . get_class($output) . '" does not implement OutputInterface.', 1517161194);
         }
 
-        $this->output->output($output->convert($result));
+        $this->output->output($output->getText());
+        $this->sendAndExit($output->getExitCode());
     }
 
     /**

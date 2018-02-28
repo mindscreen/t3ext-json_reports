@@ -7,10 +7,20 @@ namespace Mindscreen\JsonReports\Output;
  */
 interface OutputInterface
 {
+
     /**
+     * OutputInterface constructor.
      * @param $reportData
+     */
+    public function __construct($reportData);
+
+    /**
      * @return string
      */
-    public function convert($reportData);
+    public function getText();
 
+    /**
+     * @return int
+     */
+    public function getExitCode();
 }
