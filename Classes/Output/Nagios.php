@@ -49,11 +49,11 @@ class Nagios extends AbstractOutput
     public function getText()
     {
         if ($this->count['1'] === 0 && $this->count['2'] === 0) {
-            $textOutput = 'OK - No warnings or errors in TYPO3 reports';
+            $textOutput = 'No warnings or errors in TYPO3 reports';
         } elseif ($this->count['2'] === 0) {
-            $textOutput = sprintf('WARNING - %s warning(s) in TYPO3 reports', $this->count['1']);
+            $textOutput = sprintf('%s warning(s) in TYPO3 reports', $this->count['1']);
         } else {
-            $textOutput = sprintf('CRITICAL - %s error(s) in TYPO3 reports', $this->count['2']);
+            $textOutput = sprintf('%s error(s) in TYPO3 reports', $this->count['2']);
         }
 
         $performanceData = sprintf('NOTICE=%s INFO=%s OK=%s WARNING=%s ERROR=%s', $this->count['-2'], $this->count['-1'], $this->count['0'], $this->count['1'], $this->count['2']);
