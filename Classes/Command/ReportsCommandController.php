@@ -47,7 +47,8 @@ class ReportsCommandController extends CommandController
                     $statusArray = $provider->getStatus();
                     /** @var Status $statusItem */
                     foreach ($statusArray as $statusItem) {
-                        if (!$this->isExcludedFromGroup($category, $statusItem->getTitle())) {
+                        if ($this->isIncludedInGroup($category, $statusItem->getTitle())
+                            && !$this->isExcludedFromGroup($category, $statusItem->getTitle())) {
                             $result[$category][] = [
                                 'title' => $statusItem->getTitle(),
                                 'value' => $statusItem->getValue(),
@@ -90,8 +91,28 @@ class ReportsCommandController extends CommandController
     {
         if (isset($this->groupConfiguration['exclude'][$category])
             && is_array($this->groupConfiguration['exclude'][$category])) {
-            if (in_array('*', $this->groupConfiguration['exclude'][$category])
-                || in_array($title, $this->groupConfiguration['exclude'][$category])) {
+            if (in_array($title, $this->groupConfiguration['exclude'][$category])) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    /**
+     * @param string $category
+     * @param string $title
+     * @return boolean
+     */
+    protected function isIncludedInGroup($category, $title)
+    {
+        if (is_array($this->groupConfiguration['include'])
+            && in_array('*', $this->groupConfiguration['include'])) {
+            return true;
+        }
+        if (isset($this->groupConfiguration['include'][$category])
+            && is_array($this->groupConfiguration['include'][$category])) {
+            if (in_array('*', $this->groupConfiguration['include'][$category])
+                || in_array($title, $this->groupConfiguration['include'][$category])) {
                 return true;
             }
         }

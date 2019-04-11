@@ -22,6 +22,7 @@ $GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['json_reports']['output']['nagios'] = Nag
 
 // Define default report group that does not exclude any reports
 $GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['json_reports']['groups']['default'] = [
+    'include' => ['*'],
     'exclude' => [],
 ];
 
