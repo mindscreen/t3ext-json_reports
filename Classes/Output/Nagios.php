@@ -33,14 +33,18 @@ class Nagios extends AbstractOutput
     {
         parent::__construct($reportData);
 
+        $warnings = [];
         foreach ($reportData as $reportCategory) {
             foreach ($reportCategory as $status) {
                 $this->count[(string)$status['severity']]++;
                 if ($status['severity'] === Status::ERROR) {
                     $this->messages[] = $status['title'] . ': ' . $status['value'] . ';';
+                } elseif ($status['severity'] == Status::WARNING) {
+                    $warnings[] = $status['title'] . ': ' . $status['value'] . ';';
                 }
             }
         }
+        $this->messages = array_merge($this->messages, $warnings);
     }
 
     /**

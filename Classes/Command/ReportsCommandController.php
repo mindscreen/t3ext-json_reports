@@ -2,6 +2,7 @@
 namespace Mindscreen\JsonReports\Command;
 
 use Mindscreen\JsonReports\Output\OutputInterface;
+use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\Configuration\Exception;
 use TYPO3\CMS\Extbase\Mvc\Controller\CommandController;
 use TYPO3\CMS\Lang\LanguageService;
@@ -15,32 +16,46 @@ class ReportsCommandController extends CommandController
 {
 
     /**
+     * @var array
+     */
+    protected $groupConfiguration = [];
+
+    /**
      * Output report results
      *
-     * @param string $format
+     * @param string $format The desired output format (defaults to json)
+     * @param string $group The report group to display
      * @throws Exception
      * @throws \TYPO3\CMS\Extbase\Mvc\Exception\StopActionException
      */
-    public function listCommand($format = 'json')
+    public function listCommand($format = 'json', $group = 'default')
     {
         $this->getLanguageService()->includeLLFile('EXT:reports/Resources/Private/Language/locallang_reports.xlf');
+
+        if (!isset($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['json_reports']['groups'][$group])) {
+            throw new Exception('The report group  "' . $group . '" has not been configured.', 1554465727);
+        }
+        $this->groupConfiguration = $GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['json_reports']['groups'][$group];
 
         $result = [];
         /** @var StatusProviderInterface $provider */
         foreach ($GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['reports']['tx_reports']['status']['providers'] as $category => $providers) {
             $result[$category] = [];
             foreach ($providers as $providerClass) {
-                $provider = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance($providerClass);
+                $provider = GeneralUtility::makeInstance($providerClass);
                 if ($provider instanceof StatusProviderInterface) {
                     $statusArray = $provider->getStatus();
                     /** @var Status $statusItem */
                     foreach ($statusArray as $statusItem) {
-                        $result[$category][] = [
-                            'title' => $statusItem->getTitle(),
-                            'value' => $statusItem->getValue(),
-                            'message' => $statusItem->getMessage(),
-                            'severity' => $statusItem->getSeverity(),
-                        ];
+                        if ($this->isIncludedInGroup($category, $statusItem->getTitle())
+                            && !$this->isExcludedFromGroup($category, $statusItem->getTitle())) {
+                            $result[$category][] = [
+                                'title' => $statusItem->getTitle(),
+                                'value' => $statusItem->getValue(),
+                                'message' => $statusItem->getMessage(),
+                                'severity' => $statusItem->getSeverity(),
+                            ];
+                        }
                     }
                 }
             }
@@ -67,4 +82,40 @@ class ReportsCommandController extends CommandController
         return $GLOBALS['LANG'];
     }
 
+    /**
+     * @param string $category
+     * @param string $title
+     * @return boolean
+     */
+    protected function isExcludedFromGroup($category, $title)
+    {
+        if (isset($this->groupConfiguration['exclude'][$category])
+            && is_array($this->groupConfiguration['exclude'][$category])) {
+            if (in_array($title, $this->groupConfiguration['exclude'][$category])) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    /**
+     * @param string $category
+     * @param string $title
+     * @return boolean
+     */
+    protected function isIncludedInGroup($category, $title)
+    {
+        if (is_array($this->groupConfiguration['include'])
+            && in_array('*', $this->groupConfiguration['include'])) {
+            return true;
+        }
+        if (isset($this->groupConfiguration['include'][$category])
+            && is_array($this->groupConfiguration['include'][$category])) {
+            if (in_array('*', $this->groupConfiguration['include'][$category])
+                || in_array($title, $this->groupConfiguration['include'][$category])) {
+                return true;
+            }
+        }
+        return false;
+    }
 }
