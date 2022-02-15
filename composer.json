@@ -9,7 +9,7 @@
     "issues": "https://github.com/mindscreen/t3ext-json_reports/issues"
   },
   "require": {
-    "typo3/cms-core": ">=7.6.0,<9.0"
+    "typo3/cms-core": "^9.5.31"
   },
   "autoload": {
     "psr-4": {
